@@ -1,0 +1,7 @@
+<apex:page controller="VFPM_Controller" sidebar="false" action="{!getTotals}" contenttype="text/plain/#VF_Totals.csv" cache="false">
+PageName, Id, 90 Day Count
+    <apex:repeat value="{!theList}" var="a">
+{!a}    
+	</apex:repeat> 
+
+</apex:page>

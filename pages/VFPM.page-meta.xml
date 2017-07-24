@@ -3,7 +3,7 @@
     <apiVersion>40.0</apiVersion>
     <availableInTouch>false</availableInTouch>
     <confirmationTokenRequired>false</confirmationTokenRequired>
-    <label>VFPageMetrics</label>
+    <label>VFPM</label>
     <packageVersions>
         <majorNumber>1</majorNumber>
         <minorNumber>31</minorNumber>
