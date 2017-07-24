@@ -1,10 +1,10 @@
 public class VFPM_Controller {
+ 	// Gets totals from VisualforceAccessMetrics
+    // Match the ApexPageId to a PageName to include in the export
+    // Include pages not listed which means they were not access
 
     public List<String> theList {get; set;}
     
-    // Gets totals from VisualforceAccessMetrics
-    // Match the ApexPageId to a PageName to include in the export
-    // Include pages not listed which means they were not access
     public pageReference getTotals(){
         AggregateResult[] groupedResults = [SELECT SUM(DailyPageViewCount), ApexPageId FROM VisualforceAccessMetrics Group By ApexPageId];
         Map<Id,ApexPage> pages = new Map<Id,ApexPage>([Select Id, Name from ApexPage order by Name desc]);
