@@ -1,0 +1,75 @@
+<apex:page >
+    <script type="text/javascript">
+    var __sfdcSessionId = '{!GETSESSIONID()}';
+    </script>
+    <script src="../../soap/ajax/40.0/connection.js"
+    type="text/javascript"></script>
+    <script type="text/javascript">     
+    
+    function getMetrics()
+    {
+        var metricByDate = {};
+        
+        var result = sforce.connection.query(
+            "SELECT ApexPageId,DailyPageViewCount,Id,MetricsDate FROM VisualforceAccessMetrics " + 
+            "ORDER BY MetricsDate desc, DailyPageViewCount desc");
+        
+        var it = new sforce.QueryResultIterator(result);
+        
+        while(it.hasNext()) {
+            var record = it.next();
+            
+            var dEle=metricByDate[record.MetricsDate];		
+            if (!dEle) {
+                dEle=[];
+                metricByDate[record.MetricsDate]=dEle;
+            }
+            
+            // add to the metrics organised by date
+            dEle.push(record);
+            console.log('Got record ' + JSON.stringify(record, null, 4));
+        }  
+        
+        result = sforce.connection.query(
+            "Select Id, Name from ApexPage order by Name desc");
+        
+        it = new sforce.QueryResultIterator(result);
+        
+        var pageNamesById={};
+        
+        while(it.hasNext()) {
+            var record = it.next();
+            pageNamesById[record.Id]=record.Name;
+        }
+        console.log('Page names by id = ' + JSON.stringify(pageNamesById, null, 4));
+        
+        var output='<table width="100%">';
+        for (var dt in metricByDate) {
+            if (metricByDate.hasOwnProperty(dt)) {
+                var recs=metricByDate[dt];
+                output+='<tr><th colspan="3" style="text-align:center; font-size:1.2em;">' + dt + '</td></tr>';
+				output+='<tr><th>Page</th><th>Date</th><th>Views</th></tr>';
+			    for (var idx=0, len=recs.length; idx<len; idx++) {
+                    var rec=recs[idx];
+                    var name=pageNamesById[rec.ApexPageId];
+                    output+='<tr><td>' + name + '</td>';
+                    output+='<td>' + rec.MetricsDate + '</td>';
+                    output+='<td>' + rec.DailyPageViewCount + '</td></tr>';
+                }
+            }
+        }
+        
+        output+='</table>';
+        
+        document.getElementById('output').innerHTML=output;
+    }
+    </script>
+    
+    <apex:sectionHeader title="Visualforce Metrics"/>
+    
+    <div id="output"> </div>
+    
+    <script>
+	    getMetrics();
+    </script>
+</apex:page>
